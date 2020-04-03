@@ -1,2 +1,4 @@
 # QM_Terminator
-青马易战PC模拟移动端 v0.5
+青马终结者 v0.5
+
+使用Qt5.14和Boost库开发
