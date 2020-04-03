@@ -1,4 +1,8 @@
 # QM_Terminator
 青马终结者
 
-使用Qt5.14和Boost库开发
+开发环境：
+Windows 10 x64
+MSVC 14.2 
+Qt5.14
+Boost Library
