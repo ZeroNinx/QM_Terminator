@@ -1,6 +1,7 @@
 #pragma once
 
 #include "stdafx.h"
+#include "quest.h"
 #include "ui_QM_Terminator.h"
 
 class QM_Terminator : public QWidget
@@ -12,6 +13,7 @@ public:
 	boost::asio::io_service io_se;
 	boost::asio::ip::tcp::resolver resolver{ io_se };
 	boost::asio::ip::tcp::socket socket{ io_se };
+	Quest current_quest;
 
 	const std::string host = "qm.linyisong.top";		//要访问的主机名
 	const std::string port = "80";					//http服务端口
@@ -21,6 +23,7 @@ public:
 	std::string uuid = "";
 	int unit = 2;
 	const int subject[12] = { 2,7,8,9,10,12,15,16,19,47,48,-1 };
+
 	//2、7、8、9、10、12、15、16、19、47、48、-1
 
 private:
@@ -36,6 +39,7 @@ public slots:
 	void btn_submit_click();
 	void btn_next_question_click();
 	void btn_answer_click();
+	void btn_cheat_click();
 	void cb_unit_change(int);
 	void cb_change_font_size(QString);
 	void le_answer_input(QString);

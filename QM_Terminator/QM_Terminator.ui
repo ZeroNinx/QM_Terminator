@@ -16,7 +16,7 @@
   <widget class="QLabel" name="lbl_id">
    <property name="geometry">
     <rect>
-     <x>20</x>
+     <x>15</x>
      <y>10</y>
      <width>61</width>
      <height>21</height>
@@ -65,7 +65,7 @@
      <x>520</x>
      <y>400</y>
      <width>72</width>
-     <height>21</height>
+     <height>23</height>
     </rect>
    </property>
    <property name="text">
@@ -90,8 +90,8 @@
     <rect>
      <x>210</x>
      <y>400</y>
-     <width>72</width>
-     <height>21</height>
+     <width>61</width>
+     <height>23</height>
     </rect>
    </property>
    <property name="text">
@@ -101,9 +101,9 @@
   <widget class="QComboBox" name="cb_unit">
    <property name="geometry">
     <rect>
-     <x>80</x>
+     <x>70</x>
      <y>40</y>
-     <width>221</width>
+     <width>141</width>
      <height>22</height>
     </rect>
    </property>
@@ -171,7 +171,7 @@
   <widget class="QLabel" name="lbl_change_unit">
    <property name="geometry">
     <rect>
-     <x>30</x>
+     <x>15</x>
      <y>40</y>
      <width>54</width>
      <height>21</height>
@@ -184,7 +184,7 @@
   <widget class="QLabel" name="lbl_change_font_size">
    <property name="geometry">
     <rect>
-     <x>460</x>
+     <x>465</x>
      <y>40</y>
      <width>54</width>
      <height>21</height>
@@ -197,7 +197,7 @@
   <widget class="QComboBox" name="cb_change_font_size">
    <property name="geometry">
     <rect>
-     <x>520</x>
+     <x>525</x>
      <y>40</y>
      <width>69</width>
      <height>22</height>
@@ -310,6 +310,97 @@
     <string>你的答案：</string>
    </property>
   </widget>
+  <widget class="QPushButton" name="btn_cheat">
+   <property name="geometry">
+    <rect>
+     <x>274</x>
+     <y>400</y>
+     <width>61</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>作弊</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="lbl_right">
+   <property name="geometry">
+    <rect>
+     <x>220</x>
+     <y>40</y>
+     <width>21</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>对：</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="lbl_total">
+   <property name="geometry">
+    <rect>
+     <x>295</x>
+     <y>40</y>
+     <width>21</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>总：</string>
+   </property>
+  </widget>
+  <widget class="QSpinBox" name="sb_right_counter">
+   <property name="geometry">
+    <rect>
+     <x>240</x>
+     <y>40</y>
+     <width>42</width>
+     <height>22</height>
+    </rect>
+   </property>
+   <property name="maximum">
+    <number>999</number>
+   </property>
+  </widget>
+  <widget class="QSpinBox" name="sb_total_counter">
+   <property name="geometry">
+    <rect>
+     <x>315</x>
+     <y>40</y>
+     <width>42</width>
+     <height>22</height>
+    </rect>
+   </property>
+   <property name="maximum">
+    <number>999</number>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label">
+   <property name="geometry">
+    <rect>
+     <x>370</x>
+     <y>40</y>
+     <width>46</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>正确率：</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="lbl_rate">
+   <property name="geometry">
+    <rect>
+     <x>420</x>
+     <y>41</y>
+     <width>46</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>0.00%</string>
+   </property>
+  </widget>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <resources>
@@ -355,7 +446,7 @@
    <slot>btn_answer_click()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>160</x>
+     <x>210</x>
      <y>404</y>
     </hint>
     <hint type="destinationlabel">
@@ -412,6 +503,22 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>btn_cheat</sender>
+   <signal>clicked()</signal>
+   <receiver>MainForm</receiver>
+   <slot>btn_cheat_click()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>326</x>
+     <y>410</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>344</x>
+     <y>404</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>btn_submit_click()</slot>
@@ -420,5 +527,6 @@
   <slot>cb_unit_change(int)</slot>
   <slot>cb_change_font_size(QString)</slot>
   <slot>le_answer_input(QString)</slot>
+  <slot>btn_cheat_click()</slot>
  </slots>
 </ui>

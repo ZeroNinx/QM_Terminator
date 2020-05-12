@@ -5,11 +5,12 @@
 class Quest
 {
 public:
+	Quest() {};
 	Quest(std::string);//构造函数
 	std::string uuid;//题号
 	std::string type;//题目类型
 	int opt_count;//选项个数
 	std::string content;//题目内容
-	std::string opt[15];//选项内容
+	std::string opt[30];//选项内容
 };
 

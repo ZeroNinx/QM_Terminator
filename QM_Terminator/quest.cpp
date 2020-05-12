@@ -15,6 +15,6 @@ Quest::Quest(std::string s)
 	type = next_subject.get<string>("subType");
 	opt_count = next_subject.get<int>("optionCount");
 	content = next_subject.get<string>("subDescript");
-	ffor(i, 1, opt_count)
-		opt[i] = next_subject.get<string>((string)"option" + to_string(i - 1));
+	ffor(i, 0, opt_count - 1)
+		opt[i] = next_subject.get<string>((string)"option" + to_string(i));
 }

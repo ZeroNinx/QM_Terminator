@@ -1,10 +1,12 @@
 #include "QM_Terminator.h"
 #include "quest.h"
 #include "answer.h"
+#include "sqlite3.h"
 
 using namespace std;
 using namespace boost::property_tree;
 using namespace boost::beast::http;
+#define display(x) ui.pte_message->appendPlainText(x)
 
 class Quest;
 
@@ -27,13 +29,14 @@ QM_Terminator::QM_Terminator(QWidget *parent)
 	}
 	fs.close();
 
-
+	
 	build_connection();
 }
 
 //建立连接
 void QM_Terminator::build_connection()
 {
+	
 	//查找域名
 	auto const results = resolver.resolve(host, port);
 
@@ -181,20 +184,20 @@ void QM_Terminator::get_quest()
 
 		//创建题目
 		Quest q(ss.str());
+		current_quest = q;
 		uuid = q.uuid;
 
 		ui.pte_message->appendPlainText(qs("------------------------------------------------------------"));
 		ui.pte_message->appendPlainText(qs("\n")+qs8(q.content)+qs("\n"));//显示题型
 		
-		ffor(i, 1, q.opt_count)//显示选项
+		ffor(i, 0, q.opt_count-1)//显示选项
 		{
 			string index;
-			index.push_back('A' + i - 1);
+			index.push_back('A' + i);
 			index.push_back('.');
 			ui.pte_message->appendPlainText(qs(index)+qs8(q.opt[i]));
 		}
 		ui.pte_message->appendPlainText(qs("\n题型：") + qs8(q.type));
-		
 	}
 	catch (std::exception const& e)
 	{
@@ -219,12 +222,6 @@ int QM_Terminator::answer_the_question()
 		const string target = "/yiban-web/stu/changeSituation.jhtml";	//目标
 		int version = 11;
 
-		//设定POST请求
-		boost::asio::streambuf request;
-		std::ostream request_stream(&request);
-
-		
-
 		//编辑POST信息
 		string info = "";
 		info += "answer=" + ui.le_answer->text().toStdString();
@@ -232,20 +229,18 @@ int QM_Terminator::answer_the_question()
 		info += "&uuid=" + uuid;
 		info += "&deviceUuid=";
 
-		//http头
-		request_stream << "POST " << target << " HTTP/1.1 \r\n";
-		request_stream << "Host: " << host << "\r\n";
-		request_stream << "Accept: application/json \r\n";
-		request_stream << "Accept-Encoding: gzip, deflate, br \r\n";
-		request_stream << "Conection: keep-alive \r\n";
-		request_stream << "Content-Type: application/x-www-form-urlencoded \r\n";
-		request_stream << "Content-Length: " << info.length() << " \r\n";
-		request_stream << "User-Agent: " << ua << " \r\n";
-		request_stream << "Cookie: " << cookie << " \r\n\r\n";
-		request_stream << info << "\r\n";
+		//request头
+		request<string_body> r{ verb::post,target,11 };
+		r.set(field::host, host);
+		r.set(field::user_agent, ua);
+		r.set(field::cookie, cookie);
+		r.set(field::connection, "keep-alive");
+		r.set(field::content_type, "application/x-www-form-urlencoded");
+		r.set(field::content_length, info.length());
+		r.body() = info;
 
 		// 发送request
-		write(socket, request);
+		write(socket, r);
 
 		//声明一个容器来保存响应
 		boost::beast::flat_buffer buf;
@@ -256,8 +251,17 @@ int QM_Terminator::answer_the_question()
 		ss << resp.body();
 		Answer ans(uuid,ss.str(),ui.le_answer->text().toStdString());
 		if (ans.is_right)
+		{
 			ui.pte_message->appendPlainText(qs("答对啦！积分+1"));
-		else ui.pte_message->appendPlainText(qs("答错了，正确答案是：")+qs(ans.right_answer));
+			ui.sb_right_counter->setValue(ui.sb_right_counter->value() + 1);
+		}
+		else 
+			ui.pte_message->appendPlainText(qs("答错了，正确答案是：") + qs(ans.right_answer));
+		ui.sb_total_counter->setValue(ui.sb_total_counter->value() + 1);
+		char rate[10];
+		sprintf(rate, "%.2f", ui.sb_right_counter->value() * 1.0 / (ui.sb_total_counter->value() * 1.0)*100);
+		if (ui.sb_total_counter->value() != 0)
+			ui.lbl_rate->setText(qs(rate)+qs("%"));
 		return 1;
 	}
 	catch (std::exception const& e)
@@ -270,7 +274,49 @@ int QM_Terminator::answer_the_question()
 	}
 }
 
-
+//作弊
+void QM_Terminator::btn_cheat_click()
+{
+	sqlite3* sqlite = NULL;
+	sqlite3_stmt* stmt = NULL;
+	string sql = "select answer from mao where subDescript='" +current_quest.content + "'";
+	int res = sqlite3_open("tk.db", &sqlite);
+	if (res != SQLITE_OK)
+	{
+		display(qs("数据库读取失败！"));
+		return;
+	}
+	res = sqlite3_prepare(sqlite, sql.c_str(), -1, &stmt, NULL);
+	if (res != SQLITE_OK)
+	{
+		display(qs("数据库出错了！"));
+		return;
+	}
+	display(qs("作弊中..."));
+	//ui.le_answer->clear();
+	bool found = false;
+	string ans;
+	while (sqlite3_step(stmt) == SQLITE_ROW)
+	{
+		found = true;
+		ans = (char*)sqlite3_column_text(stmt, 0);
+	}
+	if (found)
+	{
+		ffor(i, 0, current_quest.opt_count - 1)//显示选项
+		{
+			if (current_quest.opt[i] == ans)
+			{
+				string res = "A";
+				res[0] += i;
+				display(qs("正确答案：")+qs(res+".") + qs8(ans));
+				ui.le_answer->setText(qs(res));
+				break;
+			}
+		}
+	}
+	else display(qs("没找到呐....."));
+}
 
 //登录按钮
 void QM_Terminator::btn_submit_click()
