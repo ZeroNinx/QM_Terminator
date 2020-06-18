@@ -22,7 +22,7 @@ public:
 	std::string cookie = "";
 	std::string uuid = "";
 	int unit = 2;
-	const int subject[12] = { 2,7,8,9,10,12,15,16,19,47,48,-1 };
+	const int subject[13] = { 2,7,8,9,10,12,15,16,19,47,48,49,-1 };
 
 	//2、7、8、9、10、12、15、16、19、47、48、-1
 

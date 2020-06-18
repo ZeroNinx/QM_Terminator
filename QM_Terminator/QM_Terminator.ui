@@ -164,6 +164,11 @@
    </item>
    <item>
     <property name="text">
+     <string>节能节水节电知识</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
      <string extracomment="-1">错题学习</string>
     </property>
    </item>

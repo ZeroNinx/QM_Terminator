@@ -249,6 +249,7 @@ int QM_Terminator::answer_the_question()
 
 		read(socket, buf, resp);
 		ss << resp.body();
+		//display(qs8(ss.str()));
 		Answer ans(uuid,ss.str(),ui.le_answer->text().toStdString());
 		if (ans.is_right)
 		{
